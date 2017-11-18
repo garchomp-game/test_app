@@ -4,7 +4,7 @@ class Player
 
   def initialize
     @name = "主人公"
-    @health_point = 10
+    @health_point = 100
     @attack = 5
   end
 
@@ -19,7 +19,7 @@ class Monster
 
   def initialize
     @name = "モンスター"
-    @health_point = 10
+    @health_point = 100
     @attack = 5
   end
 
@@ -35,17 +35,39 @@ class Battle
     @player = player
     @monster = monster
   end
+=begin
 
-  def attack
-    damage = 3
+ダメージが３に固定されていたためランダム数にした。
+プレイヤーが攻撃したものが何故かプレイヤーにダメージ帰ってきたのでちゃんと相手にダメージを与えるように変更した。
+条件分岐を用いて、もしダメージが０以下になったら中断し、モンスター倒れたのにモンスターの攻撃が発動するという謎挙動を解消した。
+
+
+=end
+  def attack_player
+    damage = rand(40)
     puts @player.name + "の攻撃！！ %iのダメージ" % damage
-    @player.health_point = @player.health_point - damage
-
-    puts @monster.name + "の攻撃！！ %iのダメージ" % damage
     @monster.health_point = @monster.health_point - damage
-    puts ""
+    if @monster.dead? # どちらかのキャラクターの hp が無くなったかの判定
+      puts ""
+      puts "----------"
+      return true
+    else
+      return false
+    end
+  end
 
-    @player.dead? or @monster.dead? # どちらかのキャラクターの hp が無くなったかの判定
+  def attack_monster
+    damage2 = rand(20)
+    puts @monster.name + "の攻撃！！ %iのダメージ" % damage2
+    @player.health_point = @player.health_point - damage2
+    if @player.dead?
+      puts ""
+      puts "----------"
+      return true
+    else
+      puts ""
+      puts "----------"
+    end
   end
 
   def judges
@@ -69,14 +91,18 @@ class Game
     battle = Battle.new(player, monster)
     decision = false
     until decision do
-      puts "----------"
       puts "主人公 HP:%i, <-> モンスター HP:%i" % [player.health_point, monster.health_point]
       print "ENTERキーを押下すると実行, 3を入力すると終了 > "
       input = gets.chomp.to_i
       if (input == 3)
         exit
       end
-      decision = battle.attack
+      # メソッド変更につきこちらの方も条件分岐をして、ちゃんと０にモンスタの攻撃が出ないようにした
+      if battle.attack_player
+        break
+      elsif battle.attack_monster
+        break
+      end
     end
     battle.judges
   end
