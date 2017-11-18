@@ -1,0 +1,23 @@
+<html>
+<head>
+<style type="text/css">
+   #content {
+      color: red;
+   }
+</style>
+<script type="text/javascript">
+function color(){
+   var color = document.getElementById("content").style.color;
+   if(color == "yellow"){
+       document.getElementById("content").style.color = "red";
+   } else {
+       document.getElementById("content").style.color = "yellow";
+   }
+}
+</script>
+</head>
+    <body>
+     <div id="content">Hello Wordl!</div>
+     <input type="button" value="change" onClick="color()">
+   </body>
+</html>
